@@ -17,12 +17,14 @@ namespace Projekt.NET.Data
         public DbSet<Product> Product { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<SiteUser> User { get; set; }
+        public DbSet<Role> Role { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Product>().ToTable("Product");
             modelBuilder.Entity<Category>().ToTable("Category");
             modelBuilder.Entity<SiteUser>().ToTable("User");
+            modelBuilder.Entity<SiteUser>().ToTable("Role");
 
             modelBuilder.Entity<CategoryProduct>().HasKey(cp => new { cp.CategoryId, cp.ProductId });
             modelBuilder.Entity<CategoryProduct>()

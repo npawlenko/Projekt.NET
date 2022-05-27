@@ -7,13 +7,11 @@ namespace Projekt.NET.Models
 {
     public class MyPageModel : PageModel
     {
-        public IProductDB productDB;
-        public ICategoryDB categoryDB;
+        public IDatabase _db;
 
-        public MyPageModel(IProductDB productDB, ICategoryDB categoryDB)
+        public MyPageModel(IDatabase db)
         {
-            this.productDB = productDB;
-            this.categoryDB = categoryDB;
+            _db = db;
         }
 
 

@@ -7,7 +7,7 @@ namespace Projekt.NET.Pages
 {
     public class IndexModel : MyPageModel
     {
-        public IndexModel(IProductDB productDB, ICategoryDB categoryDB) : base(productDB, categoryDB)
+        public IndexModel(IDatabase _db) : base(_db)
         {
         }
 
