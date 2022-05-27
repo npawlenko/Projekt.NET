@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Projekt.NET.DAL;
+using Projekt.NET.Models;
 
 namespace Projekt.NET.Pages
 {
-    public class IndexModel : PageModel
+    public class IndexModel : MyPageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(IProductDB productDB, ICategoryDB categoryDB) : base(productDB, categoryDB)
         {
-            _logger = logger;
         }
+
 
         public void OnGet()
         {
-
+            
         }
     }
 }

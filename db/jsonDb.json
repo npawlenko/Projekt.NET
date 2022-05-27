@@ -1,0 +1,19 @@
+{
+  "Categories": [
+    {
+      "Id": 1,
+      "Name": "Buty"
+    },
+    {
+      "Id": 2,
+      "Name": "Kurtki"
+    },
+    {
+      "Id": 3,
+      "Name": "Kurtki"
+    }
+  ],
+  "Products": [
+
+  ]
+}
