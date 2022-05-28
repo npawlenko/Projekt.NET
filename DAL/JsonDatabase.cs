@@ -225,5 +225,121 @@ namespace Projekt.NET.DAL
 
             return 0;
         }
+
+        public bool ValidateUser(SiteUser user)
+        {
+            foreach (JToken child in _db.SelectToken("Users").Children())
+            {
+                JObject JUser = JObject.Parse(child.ToString());
+
+                int id = Int32.Parse(JUser.GetValue("Id").ToString());
+                if (id == user.Id)
+                {
+                    if (JUser.GetValue("Password").Equals(user.Password))
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public SiteUser GetUser(int _id)
+        {
+            foreach (JToken child in _db.SelectToken("Users").Children())
+            {
+                JObject JUser = JObject.Parse(child.ToString());
+
+                int id = Int32.Parse(JUser.GetValue("Id").ToString());
+                if (id == _id)
+                {
+                    string name = JUser.GetValue("Username").ToString();
+                    string password = JUser.GetValue("Password").ToString();
+                    int roleId = Int32.Parse(JUser.GetValue("roleId").ToString());
+
+                    SiteUser user = new SiteUser
+                    {
+                        Id = id,
+                        Username = name,
+                        Password = password,
+                        RoleId = roleId,
+                        Role = GetRole(roleId)
+                    };
+
+                    return user;
+                }
+            }
+
+            return null;
+        }
+
+        public int UpdateUser(SiteUser user)
+        {
+            foreach (JToken child in _db.SelectToken("Users").Children())
+            {
+                JObject JUser = JObject.Parse(child.ToString());
+
+                int id = Int32.Parse(JUser.GetValue("Id").ToString());
+                if (id == user.Id)
+                {
+                    child.Remove();
+                    JObject p = JObject.FromObject(user);
+                    _db.SelectToken("Users").Append(p);
+                    Save();
+
+                    return 1;
+                }
+            }
+
+            return 0;
+        }
+
+        public int DeleteUser(int _id)
+        {
+            foreach (JToken child in _db.SelectToken("Users").Children())
+            {
+                int id = Int32.Parse(JObject.Parse(child.ToString()).GetValue("Id").ToString());
+                if (id == _id)
+                {
+                    child.Remove();
+                    Save();
+                    return 1;
+                }
+            }
+
+            return 0;
+        }
+
+        public int AddUser(SiteUser user)
+        {
+            JObject p = JObject.FromObject(user);
+            _db.SelectToken("Users").Append(p);
+            Save();
+
+            return 1;
+        }
+
+        public Role GetRole(int _id)
+        {
+            foreach (JToken child in _db.SelectToken("Roles").Children())
+            {
+                JObject JRole = JObject.Parse(child.ToString());
+
+                int id = Int32.Parse(JRole.GetValue("Id").ToString());
+                if (id == _id)
+                {
+                    string name = JRole.GetValue("Name").ToString();
+
+                    Role role = new Role
+                    {
+                        Id = id,
+                        Name = name
+                    };
+
+                    return role;
+                }
+            }
+
+            return null;
+        }
     }
 }

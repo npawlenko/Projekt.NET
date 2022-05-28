@@ -4,17 +4,13 @@ DROP PROCEDURE deleteProduct;
 DROP PROCEDURE createCategory;
 DROP PROCEDURE updateCategory;
 DROP PROCEDURE deleteCategory;
-
-CREATE TABLE [dbo].[Category] (
-    [Id]   INT IDENTITY(1, 1) NOT NULL,
-    [Name] VARCHAR (50) NOT NULL,
-    PRIMARY KEY CLUSTERED ([Id] ASC)
-);
-
+DROP PROCEDURE createUser;
+DROP PROCEDURE updateUser;
+DROP PROCEDURE deleteUser;
 
 GO
 CREATE PROCEDURE createProduct
-	@name VARCHAR(50),
+	@name NVARCHAR(MAX),
 	@description TEXT,
 	@imgPath TEXT,
 	@price MONEY
@@ -24,9 +20,9 @@ AS
 
 GO
 CREATE PROCEDURE updateProduct
-	@name VARCHAR(50),
-	@description TEXT,
-	@imgPath TEXT,
+	@name NVARCHAR(MAX),
+	@description NVARCHAR(MAX),
+	@imgPath NVARCHAR(MAX),
 	@price MONEY,
 	@productId int
 AS
@@ -44,17 +40,17 @@ AS
 	/* kategorie */
 GO
 CREATE PROCEDURE createCategory
-	@name VARCHAR(50)
+	@name NVARCHAR(MAX)
 AS
-	INSERT INTO Category (name) VALUES (@name);
+	INSERT INTO Category (Name) VALUES (@name);
 
 
 GO
 CREATE PROCEDURE updateCategory
-	@name VARCHAR(50),
+	@name NVARCHAR(MAX),
 	@categoryId int
 AS
-	UPDATE Category SET name=@name WHERE Id=@categoryId;
+	UPDATE Category SET Name=@name WHERE Id=@categoryId;
 
 
 GO
@@ -62,3 +58,29 @@ CREATE PROCEDURE deleteCategory
 	@categoryId int
 AS
 	DELETE FROM Category WHERE Id=@categoryId
+
+		/* uzytkownicy */
+GO
+CREATE PROCEDURE createUser
+	@username NVARCHAR(MAX),
+	@password NVARCHAR(MAX),
+	@roleId int
+AS
+	INSERT INTO [User] (Username, Password, RoleId) VALUES (@username, @password, @roleId);
+
+
+GO
+CREATE PROCEDURE updateUser
+	@userId int,
+	@username NVARCHAR(MAX),
+	@password NVARCHAR(MAX),
+	@roleId int
+AS
+	UPDATE [User] SET Username=@username, Password=@password, RoleId=@roleId WHERE Id=@userId;
+
+
+GO
+CREATE PROCEDURE deleteUser
+	@userId int
+AS
+	DELETE FROM [User] WHERE Id=@userId

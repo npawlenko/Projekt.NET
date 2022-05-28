@@ -3,17 +3,23 @@ using ps9.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Projekt.NET.Data;
+using Projekt.NET.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddMvc().AddSessionStateTempDataProvider();
+builder.Services.AddSession();
+
 builder.Services.AddDbContext<ProjektNETContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProjektNETContext") ?? throw new InvalidOperationException("Connection string 'ProjektNETContext' not found.")));
 
 builder.Services.AddTransient<IDatabase, SqlDatabase>();
 //builder.Services.AddTransient<IDatabase, JsonDatabase>();
+
+
 
 var app = builder.Build();
 
@@ -33,6 +39,10 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+// Middleware
+app.UseImageMiddleware();
+
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -42,7 +52,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 

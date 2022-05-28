@@ -201,7 +201,7 @@ namespace ps9.DAL
         public Category GetCategory(int _id)
         {
             Category category = new Category();
-            SqlCommand cmd = new SqlCommand("SELECT * FROM Category WHERE id=" + _id, con);
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Category WHERE Id=" + _id, con);
 
             con.Open();
 
@@ -250,9 +250,6 @@ namespace ps9.DAL
 
         public int UpdateCategory(Category _category)
         {
-            String connectionString = _configuration.GetConnectionString("ps9");
-            SqlConnection con = new SqlConnection(connectionString);
-
             SqlCommand cmd = new SqlCommand("updateCategory", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
@@ -269,6 +266,153 @@ namespace ps9.DAL
             con.Close();
 
             return affected;
+        }
+
+        public bool ValidateUser(SiteUser user)
+        {
+            SqlCommand cmd = new SqlCommand("SELECT * FROM [User] WHERE Username=@username AND Password=@password", con);
+            
+            SqlParameter usernameParam = new SqlParameter("@username", SqlDbType.NVarChar, -1);
+            usernameParam.Value = user.Username;
+            cmd.Parameters.Add(usernameParam);
+
+            SqlParameter passwordParam = new SqlParameter("@password", SqlDbType.NVarChar, -1);
+            passwordParam.Value = user.Password;
+            cmd.Parameters.Add(passwordParam);
+
+
+
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+                return true;
+
+            return false;
+        }
+
+        public SiteUser GetUser(int _id)
+        {
+            SiteUser user = new SiteUser();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM [User] WHERE Id=" + _id, con);
+
+            con.Open();
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+                string password = reader.GetString(2);
+                int roleId = reader.GetInt32(3);
+
+                user = new SiteUser
+                {
+                    Id = id,
+                    Username = name,
+                    Password = password,
+                    RoleId = roleId,
+                    Role = GetRole(roleId)
+                };
+            }
+            reader.Close();
+            con.Close();
+
+            return user;
+        }
+
+        public int UpdateUser(SiteUser user)
+        {
+            SqlCommand cmd = new SqlCommand("updateUser", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            SqlParameter idParam = new SqlParameter("@userId", SqlDbType.Int);
+            idParam.Value = user.Id;
+            cmd.Parameters.Add(idParam);
+
+            SqlParameter usernameParam = new SqlParameter("@username", SqlDbType.NVarChar, -1);
+            usernameParam.Value = user.Username;
+            cmd.Parameters.Add(usernameParam);
+
+            SqlParameter passwordParam = new SqlParameter("@password", SqlDbType.NVarChar, -1);
+            passwordParam.Value = user.Password;
+            cmd.Parameters.Add(passwordParam);
+
+            SqlParameter roleParam = new SqlParameter("@roleId", SqlDbType.Int);
+            roleParam.Value = user.RoleId;
+            cmd.Parameters.Add(roleParam);
+
+            con.Open();
+            int affected = cmd.ExecuteNonQuery();
+            con.Close();
+
+            return affected;
+        }
+
+        public int DeleteUser(int _id)
+        {
+            SqlCommand cmd = new SqlCommand("deleteUser", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            SqlParameter idParam = new SqlParameter("@userId", SqlDbType.Int);
+            idParam.Value = _id;
+            cmd.Parameters.Add(idParam);
+
+            con.Open();
+            int affected = cmd.ExecuteNonQuery();
+            con.Close();
+
+            return affected;
+        }
+
+        public int AddUser(SiteUser user)
+        {
+            SqlCommand cmd = new SqlCommand("createUser", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            SqlParameter usernameParam = new SqlParameter("@username", SqlDbType.NVarChar, -1);
+            usernameParam.Value = user.Username;
+            cmd.Parameters.Add(usernameParam);
+
+            SqlParameter passwordParam = new SqlParameter("@password", SqlDbType.NVarChar, -1);
+            passwordParam.Value = user.Password;
+            cmd.Parameters.Add(passwordParam);
+
+            SqlParameter roleParam = new SqlParameter("@roleId", SqlDbType.Int);
+            roleParam.Value = user.RoleId;
+            cmd.Parameters.Add(roleParam);
+
+            con.Open();
+            int affected = cmd.ExecuteNonQuery();
+            con.Close();
+
+            return affected;
+        }
+
+
+        public Role GetRole(int _id)
+        {
+            if (con.State == ConnectionState.Closed)
+                con.Open();
+
+            Role role = new Role();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM [Role] WHERE Id=" + _id, con);
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+
+                role = new Role
+                {
+                    Id = id,
+                    Name = name
+                };
+            }
+            reader.Close();
+            con.Close();
+
+            return role;
         }
     }
 }

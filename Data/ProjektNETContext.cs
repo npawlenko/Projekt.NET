@@ -24,7 +24,7 @@ namespace Projekt.NET.Data
             modelBuilder.Entity<Product>().ToTable("Product");
             modelBuilder.Entity<Category>().ToTable("Category");
             modelBuilder.Entity<SiteUser>().ToTable("User");
-            modelBuilder.Entity<SiteUser>().ToTable("Role");
+            modelBuilder.Entity<Role>().ToTable("Role");
 
             modelBuilder.Entity<CategoryProduct>().HasKey(cp => new { cp.CategoryId, cp.ProductId });
             modelBuilder.Entity<CategoryProduct>()

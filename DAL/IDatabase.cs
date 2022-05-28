@@ -15,5 +15,14 @@ namespace Projekt.NET.DAL
         public int UpdateCategory(Category _product);
         public int DeleteCategory(int _id);
         public int AddCategory(Category _product);
+
+
+        public bool ValidateUser(SiteUser user);
+        public SiteUser GetUser(int _id);
+        public int UpdateUser(SiteUser user);
+        public int DeleteUser(int _id);
+        public int AddUser(SiteUser user);
+
+        public Role GetRole(int _id);
     }
 }

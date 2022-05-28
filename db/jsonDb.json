@@ -1,4 +1,26 @@
 {
+  "Users": [
+    {
+      "Id": 1,
+      "Username": "admin",
+      "Password": "abe31fe1a2113e7e8bf174164515802806d388cf4f394cceace7341a182271ab", //haslo
+      "RoleId": 1
+    }
+  ],
+  "Roles": [
+    {
+      "Id": 1,
+      "Name": "Admin"
+    },
+    {
+      "Id": 2,
+      "Name": "Kierownik"
+    },
+    {
+      "Id": 3,
+      "Name": "Pracownik"
+    }
+  ],
   "Categories": [
     {
       "Id": 1,
@@ -10,10 +32,27 @@
     },
     {
       "Id": 3,
-      "Name": "Kurtki"
+      "Name": "Skarpety"
     }
   ],
   "Products": [
-
+    {
+      "Id": 1,
+      "Name": "Kurtka super"
+    },
+    {
+      "Id": 2,
+      "Name": "Kolorowe skarpety"
+    }
+  ],
+  "CategoryProduct": [
+    {
+      "ProductId": 1,
+      "CategoryId": 2
+    },
+    {
+      "ProductId": 2,
+      "CategoryId": 3
+    }
   ]
 }
