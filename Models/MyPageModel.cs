@@ -14,18 +14,15 @@ namespace Projekt.NET.Models
         {
             _db = db;
             cart = new Cart(db);
-
-            string cartContents = HttpContext.Request.Cookies["cart"];
-            if (cartContents != null)
-                cart.Load(cartContents);
         }
 
 
 
         public void LoadCart()
         {
-            string cartContents = HttpContext.Session.GetString("jsonProductDB");
-            cart.Load(cartContents);
+            string cartContents = HttpContext.Request.Cookies["cart"];
+            if (cartContents != null)
+                cart.Load(cartContents);
         }
 
         public void SaveCart()

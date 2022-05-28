@@ -1,0 +1,44 @@
+﻿@page
+@model Projekt.NET.Pages.Cart.IndexModel
+@{
+    ViewData["Title"] = "Koszyk";
+    ViewData["Page"] = "Koszyk";
+}
+
+
+            <h2 class="mb-4">Koszyk</h2>
+
+            @if(Model.products.Count == 0)
+            {
+                <div class="text-center"><h3>Koszyk jest pusty</h3></div>
+            } else
+            {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th scope="col">@Html.DisplayNameFor(model =>Model.products[0].Id)</th>
+                        <th scope="col">@Html.DisplayNameFor(model =>Model.products[0].Name)</th>
+                        <th scope="col">@Html.DisplayNameFor(model =>Model.products[0].Price)</th>
+                        <th scope="col">Akcja</th>
+                    </tr>
+                </thead>
+ 
+                <tbody>
+                    @for (int i=0; i< Model.products.Count; i++)
+                    {
+                    <tr>
+                        <th scope="row">@Html.DisplayFor(m => Model.products[i].Id)</th>
+                        <td>@Html.DisplayFor(m => Model.products[i].Name)</td>
+                        <td>@Html.DisplayFor(m => Model.products[i].Price)</td>
+                        <td>
+                        <a asp-page="/Products/Details" asp-route-id=@Model.products[i].Id>Szczegóły</a> |
+                        <a asp-page="/Cart/Delete" asp-route-id=@i>Usuń z koszyka</a> |
+                     </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+
+            <a asp-page="/Cart/Clear"><button class="btn btn-yel mt-4">Opróżnij koszyk</button></a>
+
+            }
