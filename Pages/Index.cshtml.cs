@@ -7,6 +7,8 @@ namespace Projekt.NET.Pages
 {
     public class IndexModel : MyPageModel
     {
+        public List<Product> products { get; set; }
+
         public IndexModel(IDatabase _db) : base(_db)
         {
         }
@@ -14,7 +16,7 @@ namespace Projekt.NET.Pages
 
         public void OnGet()
         {
-            
+            products = _db.ProductList();
         }
     }
 }

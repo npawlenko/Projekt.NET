@@ -17,7 +17,7 @@ namespace Projekt.NET.Pages.Cart
 
             cart.List().RemoveAt(id);
             SaveCart();
-            return RedirectToPage("Cart");
+            return RedirectToPage("/Cart/Index");
         }
     }
 }

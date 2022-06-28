@@ -12,6 +12,7 @@ namespace Projekt.NET.Models
         public string Username { get; set; }
 
         [Required]
+        [RegularExpression(@"^[a-zA-Z''-'\s]{5,40}$", ErrorMessage = "Dozwolone sa jedynie znaki alfanumeryczne oraz haslo powinno zawierac 5-40 znakow")]
         [Display(Name ="Hasło")]
         [DataType(DataType.Password)]
         public string Password { get; set; }

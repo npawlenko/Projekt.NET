@@ -1,4 +1,16 @@
 ﻿@page
 @model Projekt.NET.Pages.Admin.IndexModel
 @{
+    ViewData["Title"] = "Strefa administratora";
+    ViewData["Page"] = "Strefa administratora";
 }
+
+<div class="mb-5">
+    <a asp-page="/Login/Logout"><button class="btn btn-primary">Wyloguj się</button></a>
+</div>
+
+<div>
+    <a asp-page="./Products/Index"><button class="btn btn-primary">Produkty</button></a>
+    <a asp-page="./Categories/Index"><button class="btn btn-primary">Kategorie</button></a>
+    <a asp-page="./Users/Index"><button class="btn btn-primary">Użytkownicy</button></a>
+</div>

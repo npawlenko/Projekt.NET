@@ -25,5 +25,19 @@ namespace Projekt.NET.Models
 
 
         public IList<CategoryProduct>? CategoryProduct { get; set; }
+
+
+
+
+        public override bool Equals(object? obj)
+        {
+            if (obj == null)
+                return false;
+            if (!(obj is Product))
+                return false;
+
+            Product p = (Product)obj;
+            return p.Id.Equals(Id);
+        }
     }
 }

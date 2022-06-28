@@ -11,9 +11,6 @@ namespace Projekt.NET.Models
         [Required]
         public string Name { get; set; }
 
-        [Required]
-        public string ImgPath { get; set; }
-
         public IList<CategoryProduct>? CategoryProduct { get; set; }
     }
 }

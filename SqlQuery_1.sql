@@ -13,9 +13,11 @@ CREATE PROCEDURE createProduct
 	@name NVARCHAR(MAX),
 	@description TEXT,
 	@imgPath TEXT,
-	@price MONEY
+	@price MONEY,
+	@id INT OUTPUT
 AS
-	INSERT INTO Product (Name, Description, ImgPath, Price) VALUES (@name, @description, @imgPath, @price);
+	INSERT INTO Product (Name, Description, ImgPath, Price) VALUES (@name, @description, @imgPath, @price)
+	SET @id = @@IDENTITY;
 
 
 GO
@@ -40,9 +42,11 @@ AS
 	/* kategorie */
 GO
 CREATE PROCEDURE createCategory
-	@name NVARCHAR(MAX)
+	@name NVARCHAR(MAX),
+	@id INT OUTPUT
 AS
-	INSERT INTO Category (Name) VALUES (@name);
+	INSERT INTO Category (Name) VALUES (@name)
+	SET @id = @@IDENTITY;
 
 
 GO

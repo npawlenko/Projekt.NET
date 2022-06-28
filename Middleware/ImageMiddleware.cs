@@ -19,7 +19,7 @@ namespace Projekt.NET.Middleware
             string url = httpContext.Request.Path;
             string watermark = "Projekt.NET";
 
-            Regex rx = new Regex(@"^/.*\.(jpg|jpeg|png|gif)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            Regex rx = new Regex(@"^/.*\.(jpg|jpeg|png|gif|webp)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             if (rx.Matches(url).Count != 0)
             {
                 String f = "./img" + url;

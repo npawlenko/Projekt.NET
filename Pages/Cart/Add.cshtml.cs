@@ -5,19 +5,21 @@ using Projekt.NET.Models;
 
 namespace Projekt.NET.Pages.Cart
 {
-    public class ClearModel : MyPageModel
+    public class AddModel : MyPageModel
     {
-        public ClearModel(IDatabase db) : base(db)
+        public AddModel(IDatabase db) : base(db)
         {
         }
 
-        public IActionResult OnGet()
+        public IActionResult OnGet(int id)
         {
+            Product p = _db.GetProduct(id);
+
             LoadCart();
-            cart.Clear();
+            cart.Add(p);
             SaveCart();
 
-            return RedirectToPage("/Cart/Index");
+            return RedirectToPage("./Index");
         }
     }
 }

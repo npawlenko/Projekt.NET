@@ -1,8 +1,10 @@
 ﻿@page
-@model Projekt.NET.Pages.Products.IndexModel
+@model Projekt.NET.Pages.Admin.Products.IndexModel
 
 @{
     ViewData["Title"] = "Index";
+
+
 }
 
 <h1>Index</h1>
@@ -25,6 +27,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Product[0].Price)
             </th>
+            <th>
+                Kategoria
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -42,6 +47,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Model.DisplayProductCategories(item)
             </td>
             <td>
                 <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |

@@ -1,7 +1,5 @@
 using Projekt.NET.DAL;
-using ps9.DAL;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Projekt.NET.Data;
 using Projekt.NET.Middleware;
 
@@ -9,9 +7,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages(options =>
+{
+    options.Conventions.AuthorizeFolder("/Admin");
+});
+
+
 builder.Services.AddMvc().AddSessionStateTempDataProvider();
 builder.Services.AddSession();
+
+builder.Services.AddAuthentication("CookieAuthentication")
+    .AddCookie("CookieAuthentication", config =>
+    {
+        config.Cookie.HttpOnly = true;
+        config.Cookie.SecurePolicy = CookieSecurePolicy.None;
+        config.Cookie.Name = "UserLoginCookie";
+        config.LoginPath = "/Login/UserLogin";
+        config.Cookie.SameSite = SameSiteMode.Strict;
+    });
 
 builder.Services.AddDbContext<ProjektNETContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProjektNETContext") ?? throw new InvalidOperationException("Connection string 'ProjektNETContext' not found.")));
@@ -58,6 +71,10 @@ app.UseStaticFiles();
 app.UseSession();
 
 app.UseRouting();
+
+app.UseCookiePolicy();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

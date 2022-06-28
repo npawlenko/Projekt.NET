@@ -1,4 +1,40 @@
 ﻿@page
 @model Projekt.NET.Pages.ProductsModel
 @{
+    ViewData["Title"] = "Produkty";
+    ViewData["Page"] = "Produkty";
 }
+
+            <h2 class="mb-4">Produkty</h2>
+
+            @if(Model.categories.Count == 0)
+            {
+    <div class="text-center"><h3>Brak produktów</h3></div>
+            } else
+            {
+                @foreach(var c in Model.categories)
+                {
+                    <h3>@c.Name</h3>
+
+                    <div class="row product">
+                    @foreach(var p in Model._db.GetCategoryProducts(c))
+                    {
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="ccc">
+                                    <p class="text-center"><img class="imw" src="@p.ImgPath"/></p>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="text-center">@p.Name</h5>
+                                    <p class="text-center">
+                                        <a asp-page="/Product" asp-route-id="@p.Id">
+                                         <button class="btn btn-primary">Szczegóły</button>
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    </div>
+                }
+            }

@@ -3,7 +3,7 @@ using Projekt.NET.Models;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ps9.DAL
+namespace Projekt.NET.DAL
 {
     public class SqlDatabase : IDatabase
     {
@@ -40,12 +40,18 @@ namespace ps9.DAL
             priceParam.Value = _product.Price;
             cmd.Parameters.Add(priceParam);
 
+            SqlParameter outputParam = new SqlParameter("@id", SqlDbType.Int);
+            outputParam.Direction = ParameterDirection.Output;
+            cmd.Parameters.Add(outputParam);
+
 
             con.Open();
             int affected = cmd.ExecuteNonQuery();
             con.Close();
 
-            return affected;
+            int id = (int)cmd.Parameters["@id"].Value;
+
+            return id;
         }
 
         public int DeleteProduct(int _id)
@@ -174,12 +180,17 @@ namespace ps9.DAL
             nameParam.Value = _category.Name;
             cmd.Parameters.Add(nameParam);
 
+            SqlParameter outputParam = new SqlParameter("@id", SqlDbType.Int);
+            outputParam.Direction = ParameterDirection.Output;
+            cmd.Parameters.Add(outputParam);
 
             con.Open();
             int affected = cmd.ExecuteNonQuery();
             con.Close();
 
-            return affected;
+            int id = (int)cmd.Parameters["@id"].Value;
+
+            return id;
         }
 
         public int DeleteCategory(int _id)
@@ -285,7 +296,13 @@ namespace ps9.DAL
             con.Open();
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.Read())
+            {
+                reader.Close();
+                con.Close();
                 return true;
+            }
+            reader.Close();
+            con.Close();
 
             return false;
         }
@@ -311,7 +328,6 @@ namespace ps9.DAL
                     Username = name,
                     Password = password,
                     RoleId = roleId,
-                    Role = GetRole(roleId)
                 };
             }
             reader.Close();
@@ -413,6 +429,240 @@ namespace ps9.DAL
             con.Close();
 
             return role;
+        }
+
+        public SiteUser GetUserByName(string _name)
+        {
+            SiteUser user = new SiteUser();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM [User] WHERE Username=@username", con);
+
+            SqlParameter usernameParam = new SqlParameter("@username", SqlDbType.NVarChar, -1);
+            usernameParam.Value = _name;
+            cmd.Parameters.Add(usernameParam);
+
+            con.Open();
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            if (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+                string password = reader.GetString(2);
+                int roleId = reader.GetInt32(3);
+
+                user = new SiteUser
+                {
+                    Id = id,
+                    Username = name,
+                    Password = password,
+                    RoleId = roleId,
+                };
+            }
+            reader.Close();
+            con.Close();
+
+            return user;
+        }
+
+        public IList<Category> GetProductCategories(Product product)
+        {
+            int _productId = product.Id;
+
+            List<Category> categories = new List<Category>();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Category WHERE Id IN (" +
+                "SELECT CategoryId FROM CategoryProduct WHERE ProductId=@productId" +
+                ")", con);
+
+            SqlParameter idParam = new SqlParameter("@productId", SqlDbType.Int);
+            idParam.Value = _productId;
+            cmd.Parameters.Add(idParam);
+
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+
+                Category category = new Category
+                {
+                    Id = id,
+                    Name = name,
+                };
+                categories.Add(category);
+            }
+            reader.Close();
+            con.Close();
+
+            return categories;
+        }
+
+        public IList<Product> GetCategoryProducts(Category category)
+        {
+            int _categoryId = category.Id;
+
+            List<Product> products = new List<Product>();
+            SqlCommand cmd = new SqlCommand("SELECT * FROM Product WHERE Id IN (" +
+                "SELECT ProductId FROM CategoryProduct WHERE CategoryId=@categoryId" +
+                ")", con);
+
+            SqlParameter idParam = new SqlParameter("@categoryId", SqlDbType.Int);
+            idParam.Value = _categoryId;
+            cmd.Parameters.Add(idParam);
+
+            con.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+                string description = reader.GetString(2);
+                string imgPath = reader.GetString(3);
+                decimal price = reader.GetDecimal(4);
+
+                Product product = new Product
+                {
+                    Id = id,
+                    Name = name,
+                    Description = description,
+                    ImgPath = imgPath,
+                    Price = price
+                };
+                products.Add(product);
+            }
+            reader.Close();
+            con.Close();
+
+            return products;
+        }
+
+        public int LinkProduct(int productId, int categoryId)
+        {
+            List<Product> products = new List<Product>();
+            SqlCommand cmd = new SqlCommand("INSERT INTO CategoryProduct (ProductId, CategoryId) VALUES(@pid, @cid)", con);
+
+            SqlParameter pidParam = new SqlParameter("@pid", SqlDbType.Int);
+            pidParam.Value = productId;
+            cmd.Parameters.Add(pidParam);
+
+            SqlParameter cidParam = new SqlParameter("@cid", SqlDbType.Int);
+            cidParam.Value = categoryId;
+            cmd.Parameters.Add(cidParam);
+
+
+            con.Open();
+            int affected = cmd.ExecuteNonQuery();
+            con.Close();
+
+            return affected;
+        }
+
+        public int UnlinkProduct(int productId)
+        {
+            List<Product> products = new List<Product>();
+            SqlCommand cmd = new SqlCommand("DELETE FROM CategoryProduct WHERE ProductId=@productId", con);
+
+            SqlParameter pidParam = new SqlParameter("@productId", SqlDbType.Int);
+            pidParam.Value = productId;
+            cmd.Parameters.Add(pidParam);
+
+            con.Open();
+            int affected = cmd.ExecuteNonQuery();
+            con.Close();
+
+            return affected;
+        }
+
+        public int UnlinkProduct(int productId, int categoryId)
+        {
+            List<Product> products = new List<Product>();
+            SqlCommand cmd = new SqlCommand("DELETE FROM CategoryProduct WHERE ProductId=@productId AND CategoryId=@categoryId", con);
+
+            SqlParameter pidParam = new SqlParameter("@productId", SqlDbType.Int);
+            pidParam.Value = productId;
+            cmd.Parameters.Add(pidParam);
+
+            SqlParameter cidParam = new SqlParameter("@categoryId", SqlDbType.Int);
+            cidParam.Value = categoryId;
+            cmd.Parameters.Add(cidParam);
+
+            con.Open();
+            int affected = cmd.ExecuteNonQuery();
+            con.Close();
+
+            return affected;
+        }
+
+        public List<SiteUser> UserList()
+        {
+            List<SiteUser> users = new List<SiteUser>();
+            
+            SqlCommand cmd = new SqlCommand("SELECT * FROM [User]", con);
+            con.Open();
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+                string password = reader.GetString(2);
+                int roleId = reader.GetInt32(3);
+
+                SiteUser user = new SiteUser
+                {
+                    Id = id,
+                    Username = name,
+                    Password = password,
+                    RoleId = roleId,
+                };
+                users.Add(user);
+            }
+            reader.Close();
+            con.Close();
+
+            return users;
+        }
+
+        public List<Role> RoleList()
+        {
+            List<Role> roles = new List<Role>();
+
+            SqlCommand cmd = new SqlCommand("SELECT * FROM [Role]", con);
+            con.Open();
+
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                int id = reader.GetInt32(0);
+                string name = reader.GetString(1);
+
+                Role role = new Role
+                {
+                    Id = id,
+                    Name = name
+                };
+                roles.Add(role);
+            }
+            reader.Close();
+            con.Close();
+
+            return roles;
+        }
+
+        public int UnlinkCategory(int categoryId)
+        {
+            List<Product> products = new List<Product>();
+            SqlCommand cmd = new SqlCommand("DELETE FROM CategoryProduct WHERE CategoryId=@categoryId", con);
+
+            SqlParameter cidParam = new SqlParameter("@categoryId", SqlDbType.Int);
+            cidParam.Value = cidParam;
+            cmd.Parameters.Add(cidParam);
+
+            con.Open();
+            int affected = cmd.ExecuteNonQuery();
+            con.Close();
+
+            return affected;
         }
     }
 }

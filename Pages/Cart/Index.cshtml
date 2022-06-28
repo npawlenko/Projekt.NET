@@ -31,7 +31,7 @@
                         <td>@Html.DisplayFor(m => Model.products[i].Name)</td>
                         <td>@Html.DisplayFor(m => Model.products[i].Price)</td>
                         <td>
-                        <a asp-page="/Products/Details" asp-route-id=@Model.products[i].Id>Szczegóły</a> |
+                        <a asp-page="/Product" asp-route-id=@Model.products[i].Id>Szczegóły</a> |
                         <a asp-page="/Cart/Delete" asp-route-id=@i>Usuń z koszyka</a> |
                      </td>
                     </tr>

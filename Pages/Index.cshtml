@@ -1,4 +1,5 @@
 ﻿@page
+@using Projekt.NET.Models
 @model IndexModel
 @{
     ViewData["Title"] = "Strona główna";
@@ -6,3 +7,48 @@
 }
 
 
+	<div id="slider" class="slider">
+		<div class="slider-content">
+			<div class="slider-content-wrapper">
+				<div class="slider-content__item image-1">1</div>
+				<div class="slider-content__item image-2">2</div>
+				<div class="slider-content__item image-3">3</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="mt-5 text-center">
+		<h1>Projekt.NET</h1>
+		<p class="w-50 mx-auto">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at nisl fringilla nibh maximus luctus. Praesent a magna ac neque mollis sollicitudin ac vel purus.</p>
+	</div>
+
+	<div class="row">
+		@if(Model.products.Count >= 3)
+            {
+
+                <div class="row product mt-5">
+
+                @for(int i=0; i<3; i++)
+                {
+                    Product p = Model.products[i];
+
+                    <div class="col-md-4 col-12">
+                        <div class="card">
+                            <div class="ccc">
+                                <p class="text-center"><img class="imw" src="@p.ImgPath"/></p>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="text-center">@p.Name</h5>
+                                <p class="text-center">
+                                    <a asp-page="/Product" asp-route-id="@p.Id">
+                                        <button class="btn btn-primary">Szczegóły</button>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                </div>
+            }
+	</div>

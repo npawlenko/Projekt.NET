@@ -8,7 +8,7 @@ namespace Projekt.NET.Models
     public class MyPageModel : PageModel
     {
         public IDatabase _db;
-        public Cart cart;
+        public Cart cart { get; set; }
 
         public MyPageModel(IDatabase db)
         {

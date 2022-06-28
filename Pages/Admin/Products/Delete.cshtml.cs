@@ -5,31 +5,33 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Projekt.NET.DAL;
 using Projekt.NET.Data;
 using Projekt.NET.Models;
 
-namespace Projekt.NET.Pages.Products
+namespace Projekt.NET.Pages.Admin.Products
 {
-    public class DeleteModel : PageModel
+    public class DeleteModel : MyPageModel
     {
-        private readonly Projekt.NET.Data.ProjektNETContext _context;
-
-        public DeleteModel(Projekt.NET.Data.ProjektNETContext context)
+        public DeleteModel(IDatabase db) : base(db)
         {
-            _context = context;
         }
 
         [BindProperty]
-      public Product Product { get; set; } = default!;
+        public Product Product { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+
+        public IActionResult OnGet(int id = 0)
         {
-            if (id == null || _context.Product == null)
+            if (!HttpContext.User.IsInRole("Admin") && !HttpContext.User.IsInRole("Kierownik"))
+                return RedirectToPage("./Index");
+
+            if (id == 0)
             {
                 return NotFound();
             }
 
-            var product = await _context.Product.FirstOrDefaultAsync(m => m.Id == id);
+            var product = _db.GetProduct(id);
 
             if (product == null)
             {
@@ -42,19 +44,18 @@ namespace Projekt.NET.Pages.Products
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public IActionResult OnPost(int id = 0)
         {
-            if (id == null || _context.Product == null)
+            if (id == 0)
             {
                 return NotFound();
             }
-            var product = await _context.Product.FindAsync(id);
+            var product = _db.GetProduct(id);
 
             if (product != null)
             {
                 Product = product;
-                _context.Product.Remove(Product);
-                await _context.SaveChangesAsync();
+                _db.DeleteProduct(id);
             }
 
             return RedirectToPage("./Index");

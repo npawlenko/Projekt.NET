@@ -20,11 +20,12 @@ namespace Projekt.NET.DAL
             if (jsonProducts != null)
             {
                 products = JsonSerializer.Deserialize<List<Product>>(jsonProducts);
+                List<Product> productList = _db.ProductList();
 
                 for (int i = 0; i < products.Count; i++)
                 {
                     Product p = products[i];
-                    if (! _db.ProductList().Contains(p))
+                    if (! productList.Contains(p))
                         Remove(p);
                 }
             }

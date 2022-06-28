@@ -5,39 +5,39 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Projekt.NET.DAL;
 using Projekt.NET.Data;
 using Projekt.NET.Models;
 
-namespace Projekt.NET.Pages.Products
+namespace Projekt.NET.Pages.Admin.Categories
 {
-    public class CreateModel : PageModel
+    public class CreateModel : MyPageModel
     {
-        private readonly Projekt.NET.Data.ProjektNETContext _context;
-
-        public CreateModel(Projekt.NET.Data.ProjektNETContext context)
+        public CreateModel(IDatabase db) : base(db)
         {
-            _context = context;
         }
 
         public IActionResult OnGet()
         {
+            if (!HttpContext.User.IsInRole("Admin") && !HttpContext.User.IsInRole("Kierownik"))
+                return RedirectToPage("./Index");
+
             return Page();
         }
 
         [BindProperty]
-        public Product Product { get; set; } = default!;
+        public Category Category { get; set; } = default!;
         
 
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
-          if (!ModelState.IsValid || _context.Product == null || Product == null)
+          if (!ModelState.IsValid || Category == null)
             {
                 return Page();
             }
 
-            _context.Product.Add(Product);
-            await _context.SaveChangesAsync();
+            _db.UpdateCategory(Category);
 
             return RedirectToPage("./Index");
         }
